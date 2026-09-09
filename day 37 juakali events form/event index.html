@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Craftsman Order Board</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 30px; background: #121212; color: #e0e0e0; }
+        .container { max-width: 650px; margin: 0 auto; }
+        form { background: #1e1e1e; padding: 20px; border-radius: 8px; border: 1px solid #333; margin-bottom: 25px; }
+        .group { display: flex; flex-direction: column; margin-bottom: 15px; }
+        label { margin-bottom: 6px; font-weight: 600; font-size: 14px; }
+        input, select { padding: 10px; border: 1px solid #444; background: #2a2a2a; color: #fff; border-radius: 4px; font-size: 15px; }
+        button { padding: 12px; background: #00adb5; color: #fff; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #008c95; }
+        .board-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 10px; }
+        #total-display { font-weight: bold; color: #00adb5; font-size: 18px; }
+        pre { background: #151515; padding: 15px; border-radius: 6px; border: 1px solid #222; font-family: monospace; font-size: 14px; overflow-x: auto; white-space: pre-wrap; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>New Order Entry</h2>
+    <form id="orderForm">
+        <div class="group">
+            <label for="clientName">Client Name</label>
+            <input type="text" id="clientName" required placeholder="e.g., Kamaus Auto">
+        </div>
+        <div class="group">
+            <label for="jobType">Job Description</label>
+            <input type="text" id="jobType" required placeholder="e.g., Steel staircase">
+        </div>
+        <div class="group">
+            <label for="quoteKes">Quote Amount (KES)</label>
+            <input type="number" id="quoteKes" required min="1" placeholder="e.g., 15000">
+        </div>
+        <button type="submit">Submit Order to Board</button>
+    </form>
+
+    <div class="board-header">
+        <h3>Order Board Output</h3>
+        <div id="total-display">Total Quoted Today: KES 0</div>
+    </div>
+    <pre id="consoleLog"></pre>
+</div>
+
+<script>
+// 1. Core processing logic
+const processOrder = (clientName, jobType, quoteKes) => {
+  const isLargeJob = quoteKes >= 10000;
+  const priority   = isLargeJob ? "High" : "Normal";
+  return Client: ${clientName} | Job: ${jobType} | Quote: KES ${quoteKes.toLocaleString()} | Priority: ${priority};
+};
+
+// 2. Initial state array
+const orders = [
+  ["Wanjiku Homes",    "Sliding gate",  32000],
+  ["Mwangi Hardware", "Window grills",  7200],
+  ["Ochieng Shop",    "Security door", 18500],
+];
+
+const logElement = document.getElementById("consoleLog");
+const totalElement = document.getElementById("total-display");
+
+// 3. Render board view function
+const updateBoardDisplay = () => {
+  let outputText = "Order board:\n";
+  for (const [client, job, quote] of orders) {
+    outputText += "  " + processOrder(client, job, quote) + "\n";
+  }
+  logElement.textContent = outputText;
+
+  const totalQuoted = orders.reduce((sum, o) => sum + o[2], 0);
+  totalElement.textContent = Total Quoted Today: KES ${totalQuoted.toLocaleString()};
+};
+
+// 4. Form integration to push live updates
+document.getElementById("orderForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  
+  const name = document.getElementById("clientName").value.trim();
+  const job = document.getElementById("jobType").value.trim();
+  const quote = parseInt(document.getElementById("quoteKes").value, 10);
+
+  // Append new item to existing dataset array
+  orders.push([name, job, quote]);
+  
+  // Re-run loops and refresh visual text area
+  updateBoardDisplay();
+  e.target.reset();
+});
+
+// Run immediately once on page load to draw seed array data 
+updateBoardDisplay();
+</script>
+
+</body>
+</html>
