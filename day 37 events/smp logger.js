@@ -34,7 +34,7 @@ form.addEventListener('submit', (event) => {
     | Rating: <strong>${rating}</strong>
   `;
 
-  console.log(Check-in: ${name} | ${rating} | Goal: ${hitGoal ? "HIT" : "MISS"});
+  console.log(`Check-in: ${name} | ${rating} | Goal: ${hitGoal ? "HIT" : "MISS"}`);
 });
 
 console.log("Form listener attached. Fill and submit the form below.");
